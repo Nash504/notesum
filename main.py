@@ -47,6 +47,7 @@ def upload_audio():
         return jsonify({"message": "Audio file uploaded and transcribed successfully", "transcription": transcription, "all_transcriptions": transcriptions}), 200
     else:
         return jsonify({"error": "Invalid file type"}), 400
+    home()
 
 if __name__ == '__main__':
     app.run(debug=True)
