@@ -18,7 +18,7 @@
         justify-content: center;
         align-items: center;
         height: 100vh;
-        background-color: #f0f0f0;
+        background-color: black;
         margin: 0;
       }
       .container {
@@ -27,8 +27,6 @@
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        width: 80%;
-        max-width: 600px;
       }
       h2 {
         color: #333;
@@ -57,22 +55,6 @@
         width: 100%;
         border-radius: 5px;
       }
-      #transcriptions {
-        margin-top: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
-      .card {
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        color: #333;
-      }
-      .card p {
-        margin: 0;
-      }
     </style>
   </head>
   <body>
@@ -82,15 +64,6 @@
       <button id="stopRecording" disabled>Stop Recording</button>
       <button id="addAudio" disabled>Add Audio for Transcription</button>
       <audio id="audioPlayer" controls></audio>
-
-      <div id="transcriptions">
-        <!-- Display all transcriptions here -->
-        {% for transcription in transcriptions %}
-        <div class="card">
-          <p>{{ transcription }}</p>
-        </div>
-        {% endfor %}
-      </div>
     </div>
 
     <script>
@@ -147,22 +120,7 @@
 
           if (response.ok) {
             alert("Audio file uploaded and transcribed successfully.");
-            const transcriptionContainer =
-              document.getElementById("transcriptions");
-
-            // Add new transcription as a card to the list
-            const card = document.createElement("div");
-            card.classList.add("card");
-            const newTranscription = document.createElement("p");
-            newTranscription.innerText = data.transcription;
-            card.appendChild(newTranscription);
-            transcriptionContainer.appendChild(card);
-
-            // Re-enable the buttons after transcription is added
-            document.getElementById("startRecording").disabled = false;
-            document.getElementById("stopRecording").disabled = true;
-            document.getElementById("addAudio").disabled = true;
-            audioChunks = []; // Clear the audio chunks for the next recording
+            console.log(data.transcription); // Log the transcription result
           } else {
             alert(data.error || "An error occurred.");
           }

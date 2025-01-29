@@ -8,6 +8,9 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# Store transcriptions globally (use a more persistent storage in a production app)
+transcriptions = []
+
 # Allow only .wav files
 ALLOWED_EXTENSIONS = {'wav'}
 
@@ -17,7 +20,7 @@ def allowed_file(filename):
 @app.route('/')
 def home():
     # Render the index.html file located in the templates folder
-    return render_template('index.html')
+    return render_template('index.html', transcriptions=transcriptions)
 
 @app.route('/upload', methods=['POST'])
 def upload_audio():
@@ -37,7 +40,11 @@ def upload_audio():
         # Call the transcribe_and_summarize function with the saved file
         transcription = transcribe_and_summarize(filename)  # Pass the file path
 
-        return jsonify({"message": "Audio file uploaded and transcribed successfully", "transcription": transcription}), 200
+        # Store transcription in the global variable
+        transcriptions.append(transcription)
+
+        # Return the updated transcription list to frontend
+        return jsonify({"message": "Audio file uploaded and transcribed successfully", "transcription": transcription, "all_transcriptions": transcriptions}), 200
     else:
         return jsonify({"error": "Invalid file type"}), 400
 

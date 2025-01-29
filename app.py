@@ -14,10 +14,9 @@ def transcribe_and_summarize(file_path):
     model = genai.GenerativeModel("gemini-1.5-flash")
     var = """
     Definition
-    YOU ARE A TRANSCRIPTION AND SUMMARIZATION MODEL NOTHING BEYOND THAT.
-    Summarize the input text by identifying the main points and removing unnecessary details, 
-    filler words, and repetition. Focus on preserving the core ideas in a concise and clear way. 
-    Keep the summary short and direct.Make them bullet points.Nothing more nothing less.DO NOT PROVIDE YOUR OWN OPINION JUST GIVE ME THE BULLET POINTS.'
+    YOU ARE A TRANSCRIPTION AND SUMMARIZATION MODEL.
+    Summarize the input audio(which usually conists of actions) into bullet points.  
+     Focus on preserving the core ideas in a concise and clear way. 
     """
     
     # Generate content from the uploaded file
@@ -27,5 +26,10 @@ def transcribe_and_summarize(file_path):
     # Clean the result text further using the model
     response = model.generate_content(f"{result.text}")
     print(f"Cleaned Transcription: {response.text}")
+    
+    # Delete the uploaded audio file after processing
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        print(f"Deleted {file_path}")
     
     return response.text  # Return the transcribed text
