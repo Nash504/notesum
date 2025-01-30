@@ -18,8 +18,9 @@
         justify-content: center;
         align-items: center;
         height: 100vh;
-        background-color: #f0f0f0;
+        background-color: #f5f5dc; /* Cream color */
         margin: 0;
+        padding: 10px;
       }
       .container {
         text-align: center;
@@ -27,17 +28,17 @@
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        width: 80%;
+        width: 100%;
         max-width: 600px;
-        max-height: 90vh; /* Set the maximum height for the container */
-        overflow-y: auto; /* Allow vertical scrolling */
+        max-height: 90vh;
+        overflow-y: auto;
       }
       h2 {
-        color: #333;
+        color: #556b2f; /* Olive green color */
       }
       button {
-        background-color: black;
-        color: white;
+        background-color: #556b2f; /* Olive green color */
+        color: #ffffff;
         border: none;
         padding: 10px 20px;
         margin: 10px;
@@ -51,8 +52,8 @@
         cursor: not-allowed;
       }
       button:hover {
-        background-color: black;
-        color: white;
+        background-color: #6b8e23; /* Darker olive green color */
+        color: #ffffff;
       }
       audio {
         margin-top: 20px;
@@ -75,14 +76,33 @@
       .card p {
         margin: 0;
       }
+      @media (max-width: 600px) {
+        body {
+          padding: 5px;
+        }
+        .container {
+          padding: 15px;
+        }
+        button {
+          padding: 8px 16px;
+          font-size: 14px;
+        }
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <h2>Audio Recorder</h2>
+      <textarea
+        id="notes"
+        rows="4"
+        cols="50"
+        placeholder="Enter your notes here..."
+      ></textarea>
       <button id="startRecording">Start Recording</button>
       <button id="stopRecording" disabled>Stop Recording</button>
       <button id="addAudio" disabled>Add Audio for Transcription</button>
+      <button id="addText" disabled>Add Text</button>
       <audio id="audioPlayer" controls></audio>
 
       <div id="transcriptions">
@@ -104,6 +124,7 @@
       document.getElementById("startRecording").onclick = startRecording;
       document.getElementById("stopRecording").onclick = stopRecording;
       document.getElementById("addAudio").onclick = uploadAudio;
+      document.getElementById("addText").onclick = addTextToCard;
 
       async function startRecording() {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -149,21 +170,8 @@
 
           if (response.ok) {
             alert("Audio file uploaded and transcribed successfully.");
-            const transcriptionContainer =
-              document.getElementById("transcriptions");
-
-            // Add new transcription as a card to the list
-            const card = document.createElement("div");
-            card.classList.add("card");
-            const newTranscription = document.createElement("p");
-            newTranscription.innerText = data.transcription;
-            card.appendChild(newTranscription);
-            transcriptionContainer.appendChild(card);
-
-            // Re-enable the buttons after transcription is added
-            document.getElementById("startRecording").disabled = false;
-            document.getElementById("stopRecording").disabled = true;
-            document.getElementById("addAudio").disabled = true;
+            document.getElementById("notes").value = data.transcription;
+            document.getElementById("addText").disabled = false; // Enable the 'Add Text' button
             audioChunks = []; // Clear the audio chunks for the next recording
           } else {
             alert(data.error || "An error occurred.");
@@ -171,6 +179,26 @@
         } catch (error) {
           alert("An error occurred during file upload.");
           console.error(error);
+        }
+      }
+
+      function addTextToCard() {
+        const notes = document.getElementById("notes").value;
+        if (notes.trim() !== "") {
+          const transcriptionContainer =
+            document.getElementById("transcriptions");
+
+          // Add new transcription as a card to the list
+          const card = document.createElement("div");
+          card.classList.add("card");
+          const newTranscription = document.createElement("p");
+          newTranscription.innerText = notes;
+          card.appendChild(newTranscription);
+          transcriptionContainer.appendChild(card);
+
+          // Clear the textarea and disable the 'Add Text' button
+          document.getElementById("notes").value = "";
+          document.getElementById("addText").disabled = true;
         }
       }
     </script>
